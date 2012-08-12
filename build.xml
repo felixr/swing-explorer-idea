@@ -1,0 +1,104 @@
+<project name="swing-explorer-idea" default="pack" basedir=".">
+
+	<!-- user properties -->
+	<loadproperties srcFile="${user.home}/.swex/build.properties"/>
+	<loadproperties srcFile="../build.properties"/>
+
+
+	<property name="zip.file"  value="swexpl-idea.zip" />
+	<property name="jar.file"  value="swingexplorer-plugin.jar" />
+	<property name="project.dir" location="${basedir}"/>
+	<property name="build.dir"   value="${project.dir}/target" />
+	<property name="classes.dir"   value="${build.dir}/classes" />
+	<property name="src.dir"     value="${project.dir}/src" />
+
+
+	<!-- Compilation classpath -->
+	<path id="classpath">
+		<!-- third party dependencies -->
+		<fileset dir="lib" includes="*.jar"/>
+	</path>
+
+	<!-- ========================================= -->
+	<!-- Deletes directories created in this build -->
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Creates directories required in build process -->
+	<target name="init">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+		<tstamp/>
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Compile project sources                       -->
+	<target name="compile" depends="init">
+		<!-- compile and facade classes -->
+		<javac destdir="${classes.dir}" classpathref="classpath" deprecation="on" failonerror="true" debug="true" target="1.5">
+			<src path="${src.dir}"/>
+		</javac>
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Cleans this project and recompiles sources    -->
+	<target name="recompile" depends="clean,compile">
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Packs classes into Jars -->
+	<target name="pack" depends="compile">
+		<tstamp />
+		
+		<filter token="version" value="${build.version}" />
+	    <filter token="vendor" value="${vendor}" />
+
+		<!-- Update files with version number -->
+		<copy file="${project.dir}/META-INF/plugin.xml_template"
+			tofile="${project.dir}/META-INF/plugin.xml" filtering="true"
+			overwrite="true" />
+
+		<jar destfile="${build.dir}/${jar.file}" duplicate="preserve">
+			<fileset dir="${classes.dir}"/>
+
+			<manifest>
+				<attribute name="Implementation-Vendor" value="${vendor}" />
+				<attribute name="Implementation-Title" value="${ant.project.name}" />
+				<attribute name="Implementation-Version" value="${build.version}" />
+				<attribute name="Date" value="${TODAY}" />
+			</manifest>
+
+			<fileset dir="${project.dir}/resources"/>
+			<fileset file="${license.file.path}" />
+
+			<fileset dir="${project.dir}">
+				<include name="META-INF/plugin.xml"/>
+			</fileset>
+		</jar>
+
+		<signjar jar="${build.dir}/${jar.file}" alias="mykey" keystore="${keystore.file.path}" storepass="${keystore.password}"/>
+
+		<zip file="target/${zip.file}">
+			<mappedresources>
+				<fileset file="${build.dir}/${jar.file}"/>
+				<globmapper from="*" to="swingexplorer-plugin/lib/*"/>
+			</mappedresources>
+			<mappedresources>
+				<fileset file="../swing-explorer-core/target/swexpl.jar"/>
+				<globmapper from="*" to="swingexplorer-plugin/lib/*"/>
+			</mappedresources>
+			<mappedresources>
+				<fileset file="../swing-explorer-agent/target/swag.jar"/>
+				<globmapper from="*" to="swingexplorer-plugin/lib/*"/>
+			</mappedresources>
+		</zip>
+
+	</target>
+
+</project>

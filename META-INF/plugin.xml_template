@@ -1,0 +1,27 @@
+<idea-plugin version="2" url="http://swingexplorer.com">
+   <name>SwingExplorer Integration</name>
+   <description><![CDATA[
+      <p>	  
+      The plug-in integrates SwingExplorer into IntelliJ IDEA. 
+	  SwingExplorer is a tool for Java Swing application debugging.
+	  Usage instructions are available <a href="http://www.swingexplorer.com?page=documentation#Install_IDEA_plug-in_for_Swing">here</a>
+      </p>
+      <p></p>
+	  <p>
+		The plug-in was contributed by <a href="mailto:pmlocek@gmail.com">Piotr Mlocek</a>
+      </p>
+   ]]></description>
+   <change-notes><![CDATA[
+	Incorporates Swing Explorer @version@
+   ]]></change-notes>
+   <version>@version@</version>
+   <vendor email="info@swingexplorer.com" url="http://www.swingexplorer.com">Swing Explorer</vendor>
+   <id>swingexplorer-plugin</id>
+
+   <idea-version since-build="107.105"/>
+
+   <extensions defaultExtensionNs="com.intellij">
+      <executor implementation="org.swingexplorer.intellij.plugin.Executor"/>
+      <programRunner implementation="org.swingexplorer.intellij.plugin.Runner"/>
+   </extensions>
+</idea-plugin>
