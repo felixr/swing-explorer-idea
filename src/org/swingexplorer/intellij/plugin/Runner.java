@@ -12,7 +12,6 @@ import javax.management.remote.JMXServiceURL;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.ExecutionResult;
 import com.intellij.execution.Executor;
@@ -66,7 +65,7 @@ public class Runner extends DefaultProgramRunner {
 
 	@Override
 	protected RunContentDescriptor doExecute(Project project,
-			Executor executor, RunProfileState runProfileState,
+			RunProfileState runProfileState,
 			RunContentDescriptor runContentDescriptor,
 			ExecutionEnvironment executionEnvironment)
 			throws ExecutionException {
@@ -75,6 +74,7 @@ public class Runner extends DefaultProgramRunner {
 		FileDocumentManager.getInstance().saveAllDocuments();
 		initJavaSettings(runProfileState);
 
+		final Executor executor = executionEnvironment.getExecutor();
 		ExecutionResult executionResult = runProfileState.execute(executor,
 				this);
 		if (executionResult == null)
